@@ -44,6 +44,29 @@ npm run dev
 npm run build
 ```
 
+## Deployment to Cloudflare Pages
+
+1. Push your code to GitHub
+
+2. Log in to the [Cloudflare Dashboard](https://dash.cloudflare.com)
+
+3. Navigate to **Pages** > **Create a project** > **Connect to Git**
+
+4. Select your GitHub repository
+
+5. Configure your build settings:
+   - Framework preset: Vite
+   - Build command: `npm run build`
+   - Build output directory: `dist`
+   - Environment variables (if needed):
+     ```
+     NODE_VERSION: 18
+     ```
+
+6. Click **Save and Deploy**
+
+Your site will be deployed to a `.pages.dev` domain. You can add a custom domain in the Pages project settings.
+
 ## Project Structure
 
 ```
