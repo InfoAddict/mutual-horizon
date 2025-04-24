@@ -5,22 +5,19 @@ import { submitBrandResearch } from '../utils/api';
 import { appColors } from '../theme/colors';
 
 interface BrandFormProps {
-  onSubmitSuccess: (reply: string) => void;
+  onSubmitSuccess: (reply: string, brandName: string) => void;
 }
 
 const BrandForm: React.FC<BrandFormProps> = ({ onSubmitSuccess }) => {
-  // Form data state
   const [formData, setFormData] = useState<BrandFormData>({
     brandName: '',
     industry: '',
     region: '',
   });
 
-  // Form submission state
   const [formState, setFormState] = useState<FormState>(FormState.IDLE);
   const [errorMessage, setErrorMessage] = useState<string>('');
 
-  // Handle input changes
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -29,11 +26,9 @@ const BrandForm: React.FC<BrandFormProps> = ({ onSubmitSuccess }) => {
     }));
   };
 
-  // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Validate form data
     if (!formData.brandName || !formData.industry || !formData.region) {
       setFormState(FormState.ERROR);
       setErrorMessage('Please fill in all fields');
@@ -44,15 +39,12 @@ const BrandForm: React.FC<BrandFormProps> = ({ onSubmitSuccess }) => {
       setFormState(FormState.LOADING);
       setErrorMessage('');
       
-      // Submit data to API
       const response = await submitBrandResearch(formData);
       
-      // Handle success
       setFormState(FormState.SUCCESS);
-      onSubmitSuccess(response.reply);
+      onSubmitSuccess(response.reply, formData.brandName);
       
     } catch (error) {
-      // Handle error
       setFormState(FormState.ERROR);
       setErrorMessage(
         error instanceof Error 

@@ -7,35 +7,45 @@ import html2pdf from 'html2pdf.js';
 interface ResultDisplayProps {
   result: string;
   onReset: () => void;
+  brandName: string;
 }
 
-const ResultDisplay: React.FC<ResultDisplayProps> = ({ result, onReset }) => {
+const ResultDisplay: React.FC<ResultDisplayProps> = ({ result, onReset, brandName }) => {
   const [copied, setCopied] = React.useState(false);
   const resultRef = React.useRef<HTMLDivElement>(null);
 
-  // Copy result to clipboard
   const copyToClipboard = () => {
     navigator.clipboard.writeText(result);
     setCopied(true);
-    
-    // Reset copied state after 2 seconds
     setTimeout(() => setCopied(false), 2000);
   };
 
-  // Download result as PDF
   const downloadPDF = () => {
     if (!resultRef.current) return;
 
+    const filename = `Brand Research - ${brandName}.pdf`;
+
     const element = resultRef.current;
     const opt = {
-      margin: 1,
-      filename: 'brand-research-results.pdf',
+      margin: [0.5, 0.5],
+      filename,
       image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2 },
-      jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+      html2canvas: { 
+        scale: 2,
+        scrollY: 0,
+        windowWidth: element.scrollWidth,
+        windowHeight: element.scrollHeight
+      },
+      jsPDF: { 
+        unit: 'in', 
+        format: 'letter', 
+        orientation: 'portrait',
+        hotfixes: ['px_scaling']
+      },
+      pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
     };
 
-    html2pdf().set(opt).from(element).save();
+    html2pdf().from(element).set(opt).save();
   };
 
   return (
@@ -72,11 +82,13 @@ const ResultDisplay: React.FC<ResultDisplayProps> = ({ result, onReset }) => {
           </div>
         </div>
         
-        <div ref={resultRef} className="overflow-auto max-h-[500px] rounded-lg p-4 bg-[#05101d] border border-[#2c4766]">
+        <div 
+          ref={resultRef} 
+          className="prose prose-invert max-w-none bg-[#05101d] border border-[#2c4766] rounded-lg p-4"
+          style={{ breakInside: 'avoid', pageBreakInside: 'avoid' }}
+        >
           {result ? (
-            <div className="prose prose-invert max-w-none">
-              <ReactMarkdown>{result}</ReactMarkdown>
-            </div>
+            <ReactMarkdown>{result}</ReactMarkdown>
           ) : (
             <p className="text-[#8ba4c6] italic">No result data available.</p>
           )}

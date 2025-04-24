@@ -8,16 +8,17 @@ import { FormState } from './types';
 function App() {
   const [result, setResult] = useState<string>('');
   const [appState, setAppState] = useState<FormState>(FormState.IDLE);
+  const [brandName, setBrandName] = useState<string>('');
 
-  // Handle form submission success
-  const handleSuccess = (reply: string) => {
+  const handleSuccess = (reply: string, name: string) => {
     setResult(reply);
+    setBrandName(name);
     setAppState(FormState.SUCCESS);
   };
 
-  // Reset the app to initial state
   const handleReset = () => {
     setResult('');
+    setBrandName('');
     setAppState(FormState.IDLE);
   };
 
@@ -48,7 +49,11 @@ function App() {
             </div>
             
             {appState === FormState.SUCCESS ? (
-              <ResultDisplay result={result} onReset={handleReset} />
+              <ResultDisplay 
+                result={result} 
+                onReset={handleReset} 
+                brandName={brandName}
+              />
             ) : (
               <BrandForm onSubmitSuccess={handleSuccess} />
             )}
@@ -61,4 +66,4 @@ function App() {
   );
 }
 
-export default App;
+export default App
