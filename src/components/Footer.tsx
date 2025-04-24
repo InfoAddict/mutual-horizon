@@ -23,9 +23,11 @@ const Footer: React.FC = () => {
         
         <div className="text-center">
           <div className="inline-flex items-center">
-            <div className="w-6 h-6 flex items-center justify-center bg-[#0e2a47] rounded-full mr-2">
-              <span className="text-[#00aaff] font-bold text-xs">M</span>
-            </div>
+            <img 
+              src="/logo.png" 
+              alt="Mutual Horizon Logo" 
+              className="w-6 h-6 mr-2"
+            />
             <p className="text-xs text-[#5d718c]">
               © {new Date().getFullYear()} Mutual Horizon. All rights reserved.
             </p>

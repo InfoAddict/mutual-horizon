@@ -1,8 +1,14 @@
 import React from 'react';
-import { Check, Copy, RefreshCw as Refresh, Download } from 'lucide-react';
+import { Check, Copy, RefreshCw as Refresh, Download, Share2 } from 'lucide-react';
 import { appColors } from '../theme/colors';
 import ReactMarkdown from 'react-markdown';
 import html2pdf from 'html2pdf.js';
+import {
+  TwitterShareButton,
+  LinkedinShareButton,
+  TwitterIcon,
+  LinkedinIcon,
+} from 'react-share';
 
 interface ResultDisplayProps {
   result: string;
@@ -12,7 +18,9 @@ interface ResultDisplayProps {
 
 const ResultDisplay: React.FC<ResultDisplayProps> = ({ result, onReset, brandName }) => {
   const [copied, setCopied] = React.useState(false);
+  const [showShare, setShowShare] = React.useState(false);
   const resultRef = React.useRef<HTMLDivElement>(null);
+  const shareButtonsRef = React.useRef<HTMLDivElement>(null);
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(result);
@@ -48,6 +56,21 @@ const ResultDisplay: React.FC<ResultDisplayProps> = ({ result, onReset, brandNam
     html2pdf().from(element).set(opt).save();
   };
 
+  // Close share menu when clicking outside
+  React.useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (shareButtonsRef.current && !shareButtonsRef.current.contains(event.target as Node)) {
+        setShowShare(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const shareUrl = window.location.href;
+  const shareTitle = `Brand Research Results for ${brandName}`;
+
   return (
     <div className="w-full max-w-[80%] mx-auto">
       <div className="bg-[#0e2a47] rounded-xl shadow-lg overflow-hidden p-6 
@@ -71,6 +94,34 @@ const ResultDisplay: React.FC<ResultDisplayProps> = ({ result, onReset, brandNam
             >
               <Download size={16} />
             </button>
+            <div className="relative" ref={shareButtonsRef}>
+              <button
+                onClick={() => setShowShare(!showShare)}
+                className="inline-flex items-center p-2 text-sm rounded-md transition-colors 
+                           bg-[#153654] hover:bg-[#1d4368] text-[#b3d1ff]"
+                aria-label="Share results"
+              >
+                <Share2 size={16} />
+              </button>
+              {showShare && (
+                <div className="absolute right-0 mt-2 py-2 w-48 bg-[#153654] rounded-md shadow-xl z-20">
+                  <div className="px-4 py-2 space-y-2">
+                    <TwitterShareButton url={shareUrl} title={shareTitle} className="w-full">
+                      <div className="flex items-center space-x-2 hover:bg-[#1d4368] p-2 rounded-md transition-colors">
+                        <TwitterIcon size={24} round />
+                        <span className="text-[#b3d1ff] text-sm">Share on Twitter</span>
+                      </div>
+                    </TwitterShareButton>
+                    <LinkedinShareButton url={shareUrl} title={shareTitle} className="w-full">
+                      <div className="flex items-center space-x-2 hover:bg-[#1d4368] p-2 rounded-md transition-colors">
+                        <LinkedinIcon size={24} round />
+                        <span className="text-[#b3d1ff] text-sm">Share on LinkedIn</span>
+                      </div>
+                    </LinkedinShareButton>
+                  </div>
+                </div>
+              )}
+            </div>
             <button
               onClick={onReset}
               className="inline-flex items-center p-2 text-sm rounded-md transition-colors 

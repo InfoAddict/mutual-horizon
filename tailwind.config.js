@@ -40,6 +40,28 @@ export default {
             'ul > li::before': { backgroundColor: '#00aaff' },
             'ol > li::before': { color: '#00aaff' },
             hr: { borderColor: '#2c4766' },
+            table: {
+              width: '100%',
+              borderCollapse: 'collapse',
+              thead: {
+                borderBottomColor: '#2c4766',
+              },
+              'tbody tr': {
+                borderBottomColor: '#153654',
+              },
+              th: {
+                color: '#ffffff',
+                padding: '0.75rem',
+                backgroundColor: '#153654',
+              },
+              td: {
+                padding: '0.75rem',
+                color: '#b3d1ff',
+              },
+              'tr:nth-child(even)': {
+                backgroundColor: '#0a1a2f',
+              },
+            },
             a: { 
               color: '#00aaff',
               '&:hover': {
